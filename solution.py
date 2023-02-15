@@ -19,12 +19,13 @@ def webServer(port=13331):
         print(f'Connection from {addr} has been established')
 
         try:
-            message = connectionSocket.recv(1024)
+            message = connectionSocket.recv(1024) #receives message from client 1024 is buffer
+            print(message)
             filename = message.split()[1] #read filename, set to 1 to not read /
 
             # opens the client requested file.
             # Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
-            f = open(filename[1:] #open file
+            f = open(filename[1:]) #open file
             outputdata=f.read() #read file and store in buffer
             # Fill in start -This variable can store your headers you want to send for any valid or invalid request.
             # Content-Type above is an example on how to send a header as bytes
@@ -46,22 +47,19 @@ def webServer(port=13331):
 
             # Fill in start - send your html file contents #Fill in end
                 connectionSocket.close()  # closing the connection socket
+            print('File Received')
 
         except Exception as e:
     # Send response message for invalid request due to the file not being found (404)
     # Fill in start
-
+            connectionSocket.send("HTTP/1.x 404 File Not Found\r\n\r\n")
     # Fill in end
 
     # Close client socket
     # Fill in start
-
+        connectionSocket.close()
     # Fill in end
 
     # Commenting out the below, as its technically not required and some students have moved it erroneously in the While loop. DO NOT DO THAT OR YOURE GONNA HAVE A BAD TIME.
-    # serverSocket.close()
-    # sys.exit()  # Terminate the program after sending the corresponding data
-
-
-if __name__ == "__main__":
-    webServer(13331)
+    serverSocket.close()
+    sys.exit()  # Terminate the program after sending the corresponding data
