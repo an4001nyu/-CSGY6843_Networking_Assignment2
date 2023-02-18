@@ -3,12 +3,13 @@ from socket import *
 # In order to terminate the program
 import sys
 
-
 def webServer(port=13331):
     serverSocket = socket(AF_INET, SOCK_STREAM)
 
     # Prepare a server socket
-    serverSocket.bind((socket.gethostname(), 13331))
+    ServerHost = "localhost"
+    ServerPort = 13331
+    serverSocket.bind((ServerHost, 13331))
     serverSocket.listen(1) #queue of 1 to handle 1 request at a time
 
     while True:
@@ -20,13 +21,12 @@ def webServer(port=13331):
 
         try:
             message = connectionSocket.recv(1024) #receives message from client 1024 is buffer
-            print(message)
             filename = message.split()[1] #read filename, set to 1 to not read /
 
             # opens the client requested file.
             # Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
             f = open(filename[1:]) #open file
-            outputdata=f.read() #read file and store in buffer
+            outputdata=f.read() #read file and store in outputdata
             # Fill in start -This variable can store your headers you want to send for any valid or invalid request.
             # Content-Type above is an example on how to send a header as bytes
             # Fill in end
@@ -42,12 +42,11 @@ def webServer(port=13331):
             # Fill in end
 
             # Send the content of the requested file to the client
-            for i in len(outputdata.end):
+            for i in range(0, len(outputdata)):
                 connectionSocket.send(outputdata[i])
 
             # Fill in start - send your html file contents #Fill in end
                 connectionSocket.close()  # closing the connection socket
-            print('File Received')
 
         except Exception as e:
     # Send response message for invalid request due to the file not being found (404)
@@ -57,9 +56,12 @@ def webServer(port=13331):
 
     # Close client socket
     # Fill in start
-        connectionSocket.close()
+            connectionSocket.close()
     # Fill in end
 
     # Commenting out the below, as its technically not required and some students have moved it erroneously in the While loop. DO NOT DO THAT OR YOURE GONNA HAVE A BAD TIME.
-    serverSocket.close()
-    sys.exit()  # Terminate the program after sending the corresponding data
+    #serverSocket.close()
+    #sys.exit()  # Terminate the program after sending the corresponding data
+
+    if __name__ == "__main__":
+        webServer(13331)
